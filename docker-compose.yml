@@ -5,7 +5,7 @@ services:
     expose:
       - 80
     volumes:
-      - ./python_nginx:/app
+      - .:/app
     networks:
       - flask
   reverse_proxy:

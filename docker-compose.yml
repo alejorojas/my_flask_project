@@ -1,5 +1,25 @@
 version: '3'
 services:
+  db:
+    image: mariadb:10.3
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: notSecureChangeMe
+    volumes:
+      - ./bdatos:/var/lib/mysql
+    expose:
+      - 3306
+    networks:
+      - mysql
+  phpmyadmin:
+    image: phpmyadmin
+    restart: always
+    ports:
+      - 8080:80
+    environment:
+      - PMA_ARBITRARY=1
+    networks:
+      - mysql
   web:
     image: jazzdd/alpine-flask
     expose:
@@ -8,6 +28,7 @@ services:
       - .:/app
     networks:
       - flask
+      - mysql
   reverse_proxy:
     image: nginx
     ports:
@@ -17,5 +38,7 @@ services:
     networks:
       - flask
 networks:
+  mysql:
+    driver: bridge
   flask:
     driver: bridge
